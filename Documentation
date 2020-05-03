@@ -1,0 +1,80 @@
+Convert a Coloured Image into Gary Image:
+
+The algorithm described here is independent of the type of colours in image and relies mainly
+on the gravy level of an image for processing and extracting the required information. Colour
+components like Red, Green and Blue value are not used throughout this algorithm. So, if the
+input image is a coloured image represented by 3-dimensional array in MATLAB, it is
+converted to a 2-dimensional gravy image before further processing. The sample of original
+input image and a gravy image is shown below: 
+Dilate an Image:
+
+Dilation is a process of improvising given image by filling holes in an image, sharpen the
+edges of objects in an image, and join the broken lines and increase the brightness of an
+image. Using dilation, the noise with-in an image can also be removed. By making the edges
+sharper, the difference of gravy value between neighbouring pixels at the edge of an object
+can be increased. This enhances the edge detection. In Number Plate Detection, the image of
+a car plate may not always contain the same brightness and shades. Therefore, the given
+image must be converted from RGB to gravy form. However, during this conversion, certain
+important parameters like difference in colour, lighter edges of object, etc. may get lost. The
+process of dilation will help to nullify such losses.
+
+Horizontal and Vertical Edge Processing of an Image:
+
+Histogram is a graph representing the values of a variable quantity over a given range. In this
+Number Plate Detection algorithm, the writer has used horizontal and vertical histogram,
+which represents the column-wise and row-wise histogram respectively. These histograms
+represent the sum of differences of grey values between neighbouring pixels of an image,
+column-wise and row-wise. In the above step, first the horizontal histogram is calculated. To
+find a horizontal histogram, the algorithm traverses through each column of an image. In each
+column, the algorithm starts with the second pixel from the top. The difference between
+second and first pixel is calculated. If the difference exceeds certain threshold, it is added to
+total sum of differences. Then, algorithm will move downwards to calculate the difference
+between the third and second pixels. So on, it moves until the end of a column and calculate
+the total sum of differences between neighbouring pixels. At the end, an array containing the
+column-wise sum is created. The same process is carried out to find the vertical histogram. In
+this case, rows are processed instead of columns 
+
+Passing Histograms through a Low Pass Digital Filter:
+
+Referring to the figures shown below, one can see that the histogram values changes
+drastically between consecutive columns and rows. Therefore, to prevent loss of important
+information in upcoming steps, it is advisable to smooth out such drastic changes in values of
+histogram. For the same, the histogram is passed through a low-pass digital filter. While
+performing this step, each histogram value is averaged out considering the values on it
+righthand side and left-hand side. This step is performed on both the horizontal histogram as
+well as the vertical histogram. Below are the figures showing the histogram before passing
+through a low-pass digital filter and after passing through a low-pass digital filter. 
+Filtering out Unwanted Regions in an Image
+
+Once the histograms are passed through a low-pass digital filter, a filter is applied to remove
+unwanted areas from an image. In this case, the unwanted areas are the rows and columns with
+low histogram values. A low histogram value indicates that the part of image contains very
+little variations among neighbouring pixels. Since a region with a license plate contains a plain
+background with alphanumeric characters in it, the difference in the neighbouring pixels,
+especially at the edges of characters and number plate, will be very high. This result in a high
+histogram value for such part of an image Therefore, a region with probable license plate has
+a high horizontal and vertical histogram values. Areas with less value are thus not required
+anymore. Such areas are removed from an image by applying a dynamic threshold. In this
+algorithm, the dynamic threshold is equal to the average value of a histogram. Both horizontal
+and vertical histograms are passed through a filter with this dynamic threshold.
+The output of this process is histogram showing regions having high probability of containing
+a number plate. 
+
+Segmentation:
+
+The next step is to find all the regions in an image that has high probability of containing a
+license plate. Co-ordinates of all such probable regions are stored in an array. The output image
+displaying the probable license plate regions is shown below.
+
+Region of Interest Extraction:
+
+The output of segmentation process is all the regions that have maximum probability of
+containing a license plate. Out of these regions, the one with the maximum histogram value is
+considered as the most probable candidate for number plate. All the regions are processed rowwise and column-wise to find a common region having maximum horizontal and vertical
+histogram value. This is the region having highest probability of containing a license plate. The
+image detected license plate is shown below: This algorithm was verified using several input
+images having resolution varying from 680 * 480 to 1600 * 1200. The images contained
+vehicles of different colours and varying intensity of light. With all such images, the algorithm
+correctly recognized the number plate. This algorithm was also tried on images having number
+plate aligned at certain angle (approximately 8-10 degree) to horizontal axis. Even with such
+images, the number plates were detected successfully. 
